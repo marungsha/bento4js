@@ -1,7 +1,6 @@
 {
-  "name": "bento4js",
-  "version": "1.0.0",
-  "description": "",
+  "name": "js-bento4",
+  "version": "1.0.1",
   "main": "Bento.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -14,8 +13,18 @@
     "current-module-paths": "^1.1.1",
     "decompress": "^4.2.1",
     "fs-extra": "^11.1.1",
+    "my-package": "^0.0.0",
     "node-fetch": "^3.3.2",
     "object-to-spawn-args": "^2.0.1",
     "rimraf": "^5.0.1"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "description": "",
+  "standard": {
+    "envs": [
+      "node"
+    ]
   }
 }
