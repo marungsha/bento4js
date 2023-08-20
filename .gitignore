@@ -2,3 +2,4 @@ node_modules
 bin/*
 files/*
 output/*
+tests/privatetest.js
