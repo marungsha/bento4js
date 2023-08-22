@@ -7,7 +7,7 @@ class Bento4{
     // for running as module / library in other project
     // Turn it false for running inside library project itself
     static isModule = true
-    static async transcode(files = [], options = { aesKey: null, noIframe: false }, onComplete = () => {}, onError = () => {}){
+    static async transcode(files = [], options = { aesKey: null, noIframe: false, singleFile: false }, onComplete = () => {}, onError = () => {}){
         if(options.aesKey){
             return this.getEncryptionKey(options.aesKey, (encryptionKey) => {
                 this.runEncode(files, { ...options, aesKey: encryptionKey }, onComplete, onError)
@@ -36,14 +36,20 @@ class Bento4{
     static runEncode(files, options, onComplete, onError) {
         // prepare arguments
         let args = files
-        if(options.aesKey) args = ['--encryption-key', aesKey, '--output-encryption-key'].concat(args)
+        if(options.aesKey) args = ['--encryption-key', options.aesKey, '--output-encryption-key'].concat(args)
+        if(options.singleFile) args.push('--output-single-file')
 
         // clean output folder
         fs.rmSync("output", {recursive: true, force: true})
         
         // spawn process
-        console.log(path.join(BentoBinPath, 'mp4hls'))
-        var child = spawn(!this.isModule?"./bin/bento4/bin/mp4hls":'./node_modules/js-bento4/bin/bento4/bin/mp4hls', args)
+        //console.log(options)
+        //let hlsExecutable = options.mp4hls===1?'mp4hls':'mp42hls'
+        let executable = (!this.isModule?`.`:`./node_modules/js-bento4`) + `/bin/bento4/bin/mp4hls`
+        
+        console.log(`\nExecuting ${executable}\n`)
+        
+        var child = spawn(executable, args)
         child.on("error", (error) => {
             onError(error)
             console.log(error)
