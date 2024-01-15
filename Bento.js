@@ -2,12 +2,22 @@ import { spawn } from 'child_process'
 import fs from 'fs'
 import { BentoBinPath } from './config.js'
 import path from 'path'
+import { randomUUID } from 'crypto'
 
 class Bento4{
     // for running as module / library in other project
     // Turn it false for running inside library project itself
     static isModule = true
-    static async transcode(files = [], options = { aesKey: null, noIframe: false, singleFile: false }, onComplete = () => {}, onError = () => {}){
+    static async transcode(files = [], options = { aesKey: null, noIframe: false, singleFile: false, outputPath: "output" }, onComplete = () => {}, onError = () => {}){
+        /*
+         Create output folder
+        */
+        if(options.outputPath) options.outputPath = options.outputPath+"/"+randomUUID()
+        else options.outputPath = "output/"+randomUUID()
+        
+        if(!fs.existsSync("./output")) fs.mkdirSync("./output")
+        //fs.mkdirSync(options.outputPath)
+
         if(options.aesKey){
             return this.getEncryptionKey(options.aesKey, (encryptionKey) => {
                 this.runEncode(files, { ...options, aesKey: encryptionKey }, onComplete, onError)
@@ -36,11 +46,12 @@ class Bento4{
     static runEncode(files, options, onComplete, onError) {
         // prepare arguments
         let args = files
-        if(options.aesKey) args = ['--encryption-key', options.aesKey, '--output-encryption-key'].concat(args)
+        if(options.aesKey) args = ['--encryption-key', options.aesKey, '--output-encryption-key', '--output-dir', options.outputPath].concat(args)
         if(options.singleFile) args.push('--output-single-file')
 
+        console.log(args)
         // clean output folder
-        fs.rmSync("output", {recursive: true, force: true})
+        //fs.rmSync(options.outputPath, {recursive: true, force: true})
         
         // spawn process
         //console.log(options)
@@ -59,20 +70,20 @@ class Bento4{
             if(code == 0){
                 // success
                 if(options.noIframe){
-                    this.removeIframe()
+                    this.removeIframe(options)
                 }
-                onComplete(code)
+                onComplete(code, options.outputPath)
             } else {
                 onError("Error code : "+code)
             }
         })
     }
 
-    static removeIframe(){
+    static removeIframe(options){
         console.log("Removing Iframes...")
-        let test = fs.readFileSync("./output/master.m3u8", { encoding: 'utf-8'})
+        let test = fs.readFileSync(options.outputPath+"/master.m3u8", { encoding: 'utf-8'})
         //console.log(test.split('# I-Frame Playlists')[0])
-        fs.writeFileSync("./output/master.m3u8", test.split('# I-Frame Playlists')[0], { encoding: 'utf-8' })
+        fs.writeFileSync(options.outputPath+"/master.m3u8", test.split('# I-Frame Playlists')[0], { encoding: 'utf-8' })
     }
 }
 
