@@ -18,7 +18,7 @@ class Bento4{
         if(options.outputPath) options.outputPath = process.cwd()+"/"+options.outputPath+"/"+randomUUID()
         else options.outputPath = process.cwd()+"/temp/output/"+randomUUID()
         
-        if(!fs.existsSync("./output")) fs.mkdirSync("./output")
+        if(!fs.existsSync(options.outputPath)) fs.mkdirSync(options.outputPath)
         //fs.mkdirSync(options.outputPath)
 
         if(options.aesKey){
@@ -49,7 +49,8 @@ class Bento4{
     static runEncode(files: any[], options: BentoOptions, onComplete: BentoCompleteCallback = (__,_) => {}, onError: (error: any) => void = (_: Error) => {} ) {
         // prepare arguments
         let args = files
-        if(options.aesKey) args = ['--encryption-key', options.aesKey, '--output-encryption-key', '--output-dir', options.outputPath].concat(args)
+        if(options.aesKey) args = args.concat(['--encryption-key', options.aesKey, '--output-encryption-key'])
+        if(options.outputPath) args = args.concat([ '--output-dir', options.outputPath])
         if(options.singleFile) args.push('--output-single-file')
 
         console.log(args)

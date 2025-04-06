@@ -25,8 +25,8 @@ class Bento4 {
                 options.outputPath = process.cwd() + "/" + options.outputPath + "/" + (0, crypto_1.randomUUID)();
             else
                 options.outputPath = process.cwd() + "/temp/output/" + (0, crypto_1.randomUUID)();
-            if (!fs_extra_1.default.existsSync("./output"))
-                fs_extra_1.default.mkdirSync("./output");
+            if (!fs_extra_1.default.existsSync(options.outputPath))
+                fs_extra_1.default.mkdirSync(options.outputPath);
             //fs.mkdirSync(options.outputPath)
             if (options.aesKey) {
                 return this.getEncryptionKey(options.aesKey, (encryptionKey) => {
@@ -52,7 +52,9 @@ class Bento4 {
         // prepare arguments
         let args = files;
         if (options.aesKey)
-            args = ['--encryption-key', options.aesKey, '--output-encryption-key', '--output-dir', options.outputPath].concat(args);
+            args = args.concat(['--encryption-key', options.aesKey, '--output-encryption-key']);
+        if (options.outputPath)
+            args = args.concat(['--output-dir', options.outputPath]);
         if (options.singleFile)
             args.push('--output-single-file');
         console.log(args);
