@@ -1,10 +1,10 @@
-interface BentoOptions {
+export interface BentoOptions {
     aesKey: string | null;
     singleFile: boolean;
     outputPath: string;
     noIframe: boolean;
 }
-interface BentoCompleteCallback {
+export interface BentoCompleteCallback {
     (code: number, path: string): void;
 }
 declare class Bento4 {
