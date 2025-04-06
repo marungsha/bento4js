@@ -25,8 +25,14 @@ class Bento4 {
                 options.outputPath = process.cwd() + "/" + options.outputPath + "/" + (0, crypto_1.randomUUID)();
             else
                 options.outputPath = process.cwd() + "/temp/output/" + (0, crypto_1.randomUUID)();
-            if (!fs_extra_1.default.existsSync(options.outputPath))
-                fs_extra_1.default.mkdirSync(options.outputPath);
+            let targetFolder = options.outputPath.split('/');
+            targetFolder.pop();
+            // Just before final folder the path should exist
+            if (!fs_extra_1.default.existsSync(targetFolder.join('/')))
+                fs_extra_1.default.mkdirSync(targetFolder.join('/'));
+            // Final folder will be created by bento
+            if (fs_extra_1.default.existsSync(options.outputPath))
+                fs_extra_1.default.rmdirSync(options.outputPath);
             //fs.mkdirSync(options.outputPath)
             if (options.aesKey) {
                 return this.getEncryptionKey(options.aesKey, (encryptionKey) => {
@@ -50,13 +56,14 @@ class Bento4 {
     }
     static runEncode(files, options, onComplete = (__, _) => { }, onError = (_) => { }) {
         // prepare arguments
-        let args = files;
+        let args = [];
         if (options.aesKey)
             args = args.concat(['--encryption-key', options.aesKey, '--output-encryption-key']);
         if (options.outputPath)
             args = args.concat(['--output-dir', options.outputPath]);
         if (options.singleFile)
             args.push('--output-single-file');
+        args = args.concat(files);
         console.log(args);
         // clean output folder
         //fs.rmSync(options.outputPath, {recursive: true, force: true})
