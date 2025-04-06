@@ -2,8 +2,8 @@ import fs from 'fs-extra'
 import { spawn } from 'child_process'
 import { randomUUID } from 'crypto'
 
-interface BentoOptions {aesKey: string | null, singleFile: boolean, outputPath: string, noIframe: boolean}
-interface BentoCompleteCallback {
+export interface BentoOptions {aesKey: string | null, singleFile: boolean, outputPath: string, noIframe: boolean}
+export interface BentoCompleteCallback {
     (code: number, path:string): void
 }
 
