@@ -1,7 +1,5 @@
 import { spawn } from 'child_process'
 import fs from 'fs'
-import { BentoBinPath } from './config.js'
-import path from 'path'
 import { randomUUID } from 'crypto'
 
 class Bento4{

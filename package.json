@@ -1,10 +1,11 @@
 {
   "name": "js-bento4",
   "version": "1.0.8",
-  "main": "Bento.js",
+  "main": "dist/Bento.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "node scripts/install.js"
+    "postinstall": "node scripts/install.js",
+    "build": "tsc"
   },
   "type": "module",
   "author": "",
@@ -26,5 +27,9 @@
     "envs": [
       "node"
     ]
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "typescript": "^5.8.3"
   }
 }
